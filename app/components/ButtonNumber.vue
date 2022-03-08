@@ -1,5 +1,5 @@
 <template>
-    <Button v-on="$attrs" >
+    <Button @tap="fnEnter" >
         <Span class="text">{{ buttonValue }}</Span>
     </Button>
 </template>
@@ -9,6 +9,11 @@ export default {
     props: {
         buttonValue: {
             type: String
+        }
+    },
+    methods: {
+        fnEnter() {
+            this.$emit('fnEnter', this.buttonValue)
         }
     }
 }

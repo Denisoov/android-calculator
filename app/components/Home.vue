@@ -3,33 +3,34 @@
     <ActionBar class="action-bar" title="Calculator"> </ActionBar>
 
     <StackLayout class="wrapper-calculator">
-      <Label class="operations" :text="result" />
+      <Label class="operations" :text="enterValues" />
       <Label class="result" :text="result" />
       <FlexboxLayout flexDirection="row">
         <FlexboxLayout class="wrapper-left">
           <!-- Дополнительно -->
           <FlexboxLayout class="wrapper-left__additionals">
-            <ButtonNumber :buttonValue="'c'" />
-            <ButtonNumber :buttonValue="'^'" />
+            <ButtonNumber @fnEnter="clearCollection" :buttonValue="'c'" />
+            <ButtonNumber @fnEnter="collectionEnterOperator" :buttonValue="'^'" />
           </FlexboxLayout>
 
           <!-- Цифры -->
           <FlexboxLayout class="numbers">
             <ButtonNumber
+              @fnEnter="collectionEnterValue"
               v-for="number in 9"
               :key="number"
               :buttonValue="number"
             />
-
-            <ButtonNumber :buttonValue="'0'" />
-            <ButtonNumber :buttonValue="'.'" />
-            <ButtonNumber :buttonValue="'='" />
+            <ButtonNumber @fnEnter="collectionEnterOperator" :buttonValue="'0'" />
+            <ButtonNumber @fnEnter="collectionEnterOperator" :buttonValue="'.'" />
+            <ButtonNumber @fnEnter="calculation" :buttonValue="'='" />
           </FlexboxLayout>
         </FlexboxLayout>
 
         <!-- Действия -->
         <FlexboxLayout class="wrapper-right-actions">
           <ButtonNumber
+            @fnEnter="collectionEnterOperator"
             v-for="(action, idx) in actions"
             :key="idx"
             :buttonValue="action"
@@ -50,10 +51,39 @@ export default {
   data() {
     return {
       result: 0,
-      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      actions: ["÷", "×", "-", "+"],
+      enterValues: '',
+      actions: ["/", "*", "-", "+"],
     };
   },
+  methods: {
+    checkDoubleKey(key) {
+      const res = this.enterValues
+      const lastSymbol = res.length !== 0 ? res[res.length - 1]  : null
+
+      return lastSymbol == key
+    },
+    checkOperation(key) {
+      const operators = ["/", "*", "-", "+", ".", "^"]
+      const checkSymbol = operators.includes(key)
+
+      return checkSymbol
+    },
+    collectionEnterValue(key) {
+      this.enterValues += key
+    },
+    collectionEnterOperator(key) {
+      this.checkOperation(this.enterValues[this.enterValues.length - 1]) 
+        ? this.enterValues = this.enterValues.replace(/.$/, String(key)) 
+        : this.collectionEnterValue(key)
+    },
+    clearCollection() {
+      this.enterValues = ''
+      this.result = 0
+    },
+    calculation() {
+      this.result = eval(this.enterValues)
+    }
+  }
 };
 </script>
 
