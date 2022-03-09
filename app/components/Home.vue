@@ -69,7 +69,7 @@ export default {
       return checkSymbol
     },
     collectionEnterValue(key) {
-      this.enterValues == '0' ? this.enterValues = key : this.enterValues += key
+      this.enterValues == '0' ? this.enterValues = key : this.enterValues += String(key)
     },
     addDot() {
       if (this.enterValues.length !== 0) {
