@@ -72,13 +72,14 @@ export default {
       this.enterValues += key
     },
     collectionEnterOperator(key) {
-      this.checkOperation(this.enterValues[this.enterValues.length - 1]) 
-        ? this.enterValues = this.enterValues.replace(/.$/, String(key)) 
-        : this.collectionEnterValue(key)
+      if (this.enterValues.length !== 0) {
+        this.checkOperation(this.enterValues[this.enterValues.length - 1]) 
+          ? this.enterValues = this.enterValues.replace(/.$/, String(key)) 
+          : this.collectionEnterValue(key)
+      }
     },
     clearCollection() {
-      this.enterValues = ''
-      this.result = 0
+      this.enterValues !== '' ? this.enterValues = '': this.result = 0 
     },
     calculation() {
       this.result = eval(this.enterValues)
