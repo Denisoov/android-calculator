@@ -21,8 +21,8 @@
               :key="number"
               :buttonValue="number"
             />
-            <ButtonNumber @fnEnter="collectionEnterOperator" :buttonValue="'0'" />
-            <ButtonNumber @fnEnter="collectionEnterOperator" :buttonValue="'.'" />
+            <ButtonNumber @fnEnter="collectionEnterValue" :buttonValue="'0'" />
+            <ButtonNumber @fnEnter="addDot" :buttonValue="'.'" />
             <ButtonNumber @fnEnter="calculation" :buttonValue="'='" />
           </FlexboxLayout>
         </FlexboxLayout>
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       result: 0,
-      enterValues: '',
+      enterValues: '0',
       actions: ["/", "*", "-", "+"],
     };
   },
@@ -69,20 +69,48 @@ export default {
       return checkSymbol
     },
     collectionEnterValue(key) {
-      this.enterValues += key
+      this.enterValues == '0' ? this.enterValues = key : this.enterValues += key
     },
-    collectionEnterOperator(key) {
+    addDot() {
       if (this.enterValues.length !== 0) {
+        if (!this.checkOperation(this.enterValues[this.enterValues.length - 1])) 
+          this.enterValues += '.'
+      }
+      else {
+        if (this.enterValues.substr(this.enterValues.length - 2, 2) !== '.') {
+          this.enterValues += '.'
+        }
+      }
+    },
+    collectionEnterOperator(key) {  
+      if (this.enterValues.length !== 1) {
         this.checkOperation(this.enterValues[this.enterValues.length - 1]) 
-          ? this.enterValues = this.enterValues.replace(/.$/, String(key)) 
+          ? this.enterValues = this.enterValues.replace(/.$/gi, String(key)) 
           : this.collectionEnterValue(key)
       }
     },
     clearCollection() {
-      this.enterValues !== '' ? this.enterValues = '': this.result = 0 
+      this.enterValues !== '0' 
+          ? this.enterValues = '0'
+          : this.result = 0 
     },
     calculation() {
-      this.result = eval(this.enterValues)
+      const values = this.enterValues.replace(/\^/g, "**" )
+
+      try {
+        const res = eval(values)
+
+        if (res == 'Infinity') {
+          this.enterValues = '0'
+          this.result = 'Ошибка!'
+        } else {
+          this.result = eval(values)
+        }
+
+      } catch (err) {
+        this.enterValues = '0'
+        this.result = 'Ошибка!'
+      }
     }
   }
 };
