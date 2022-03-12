@@ -56,12 +56,6 @@ export default {
     };
   },
   methods: {
-    checkDoubleKey(key) {
-      const res = this.enterValues
-      const lastSymbol = res.length !== 0 ? res[res.length - 1]  : null
-
-      return lastSymbol == key
-    },
     checkOperation(key) {
       const operators = ["/", "*", "-", "+", ".", "^"]
       const checkSymbol = operators.includes(key)
